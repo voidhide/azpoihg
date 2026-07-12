@@ -2699,8 +2699,9 @@ do
     });
 
     local WatermarkOuter = Library:Create('Frame', {
+        AnchorPoint = Vector2.new(0.5, 0);
         BorderColor3 = Color3.new(0, 0, 0);
-        Position = UDim2.new(0, 100, 0, -25);
+        Position = UDim2.new(0.5, 0, 0, 8);
         Size = UDim2.new(0, 213, 0, 20);
         ZIndex = 200;
         Visible = false;
@@ -2748,16 +2749,29 @@ do
     });
 
     local WatermarkLabel = Library:CreateLabel({
-        Position = UDim2.new(0, 5, 0, 0);
-        Size = UDim2.new(1, -4, 1, 0);
+        Position = UDim2.new(0, 24, 0, 0);
+        Size = UDim2.new(1, -28, 1, 0);
         TextSize = 14;
         TextXAlignment = Enum.TextXAlignment.Left;
         ZIndex = 203;
         Parent = InnerFrame;
     });
 
+    local WatermarkIcon = Library:Create('ImageLabel', {
+        BackgroundTransparency = 1;
+        Image = '';
+        ScaleType = Enum.ScaleType.Fit;
+        AnchorPoint = Vector2.new(0, 0.5);
+        Position = UDim2.new(0, 4, 0.5, 0);
+        Size = UDim2.new(0, 16, 0, 16);
+        ZIndex = 204;
+        Parent = InnerFrame;
+    });
+
     Library.Watermark = WatermarkOuter;
     Library.WatermarkText = WatermarkLabel;
+    Library.WatermarkIcon = WatermarkIcon;
+    Library.WatermarkIconPad = 24;
     Library:MakeDraggable(Library.Watermark);
 
 
@@ -2836,9 +2850,33 @@ function Library:SetWatermarkVisibility(Bool)
     Library.Watermark.Visible = Bool;
 end;
 
+function Library:SetWatermarkIcon(AssetId)
+    if not Library.WatermarkIcon then
+        return;
+    end;
+    local id = tonumber(AssetId);
+    if not id then
+        Library.WatermarkIcon.Visible = false;
+        Library.WatermarkIconPad = 5;
+        if Library.WatermarkText then
+            Library.WatermarkText.Position = UDim2.new(0, 5, 0, 0);
+            Library.WatermarkText.Size = UDim2.new(1, -8, 1, 0);
+        end;
+        return;
+    end;
+    Library.WatermarkIcon.Image = 'rbxassetid://' .. tostring(id);
+    Library.WatermarkIcon.Visible = true;
+    Library.WatermarkIconPad = 24;
+    if Library.WatermarkText then
+        Library.WatermarkText.Position = UDim2.new(0, 24, 0, 0);
+        Library.WatermarkText.Size = UDim2.new(1, -28, 1, 0);
+    end;
+end;
+
 function Library:SetWatermark(Text)
+    local pad = Library.WatermarkIconPad or 5;
     local X, Y = Library:GetTextBounds(Text, Library.Font, 14);
-    Library.Watermark.Size = UDim2.new(0, X + 15, 0, (Y * 1.5) + 3);
+    Library.Watermark.Size = UDim2.new(0, X + pad + 10, 0, (Y * 1.5) + 3);
     Library:SetWatermarkVisibility(true)
 
     Library.WatermarkText.Text = Text;
