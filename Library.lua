@@ -1160,7 +1160,10 @@ do
             ContainerLabel.Visible = true;
             ContainerLabel.TextColor3 = State and Library.AccentColor or Library.FontColor;
 
-            Library.RegistryMap[ContainerLabel].Properties.TextColor3 = State and 'AccentColor' or 'FontColor';
+            local Reg = Library.RegistryMap[ContainerLabel];
+            if Reg and Reg.Properties then
+                Reg.Properties.TextColor3 = State and 'AccentColor' or 'FontColor';
+            end;
 
             local YSize = 0
             local XSize = 0
@@ -2699,9 +2702,9 @@ do
     });
 
     local WatermarkOuter = Library:Create('Frame', {
-        AnchorPoint = Vector2.new(0.5, 0);
+        AnchorPoint = Vector2.new(0.5, 0.5);
         BorderColor3 = Color3.new(0, 0, 0);
-        Position = UDim2.new(0.5, 0, 0, 8);
+        Position = UDim2.new(0.5, 0, 0.5, 0);
         Size = UDim2.new(0, 213, 0, 20);
         ZIndex = 200;
         Visible = false;
